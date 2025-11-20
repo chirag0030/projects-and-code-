@@ -109,3 +109,36 @@ Binders: $0.17M
 
 • Regional Filters Available:
 Dashboard can be filtered by Central, East, South, and West regions.
+
+
+## 3) project:- cars price prediction model (machine learning)
+
+A complete end-to-end machine learning workflow for predicting car selling prices. 
+The dataset includes features such as year, fuel type, transmission, km driven, and other vehicle attributes.
+# I handled everything from raw data cleaning to final model deployment steps:- 
+
+• Performed data cleaning, missing-value handling, outlier detection, and feature transformation using Pandas and NumPy.
+
+• Applied Label Encoding, OneHot Encoding, and feature scaling to prepare the data for modeling.
+
+• Conducted exploratory data analysis (EDA) to identify key patterns affecting car price.
+
+• Built and optimized a Random Forest Regressor to predict selling prices with strong accuracy.
+
+• Evaluated model performance using metrics like MAE, RMSE, and R².
+
+• Designed a reproducible pipeline that shows the complete ML process: data preprocessing → feature engineering → model training → prediction.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
