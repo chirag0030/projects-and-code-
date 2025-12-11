@@ -1,0 +1,92 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+## importing data from the dataset
+
+data = pd.read_csv("cars_details2.csv")
+df = pd.DataFrame(data)
+df.info()
+df.shape
+df.columns
+df["km_driven"].value_counts()
+df["transmission"].value_counts()
+df["fuel"].value_counts()
+
+## removing missing or null values
+
+df.dropna(how = "all",inplace=True)
+df.isnull().sum()
+
+## filling missing values
+
+df["year"].fillna(df["year"].mean())
+df["selling_price"].fillna(df["selling_price"].median())
+df.isnull().sum()
+
+## removing duplicate values
+
+df.drop_duplicates(inplace=True)
+print(df.duplicated().value_counts())
+
+#### applying visualization on the data and making the full dashboard
+
+## line chart
+
+plt.subplot(2,2,1)
+plt.plot(df["year"].index,df["selling_price"].values,marker = "o",label = "year wise selling price",color = "blue")
+plt.xlabel("years")
+plt.xlim(left = 2000,right = 2010)
+plt.title("year wise trend")
+plt.ylabel("selling price per year")
+plt.grid(color = "black",linestyle = "--")
+plt.legend()
+
+## bar chart
+
+plt.subplot(2,2,2)
+count = df["fuel"].value_counts()
+plt.bar(count.index,count.values,color=["orange","yellow","coral","yellow","lightgreen"],width=0.6,label = "counts of cars")
+plt.title("comparision of each fuel catogery")
+plt.xlabel("fuel")
+plt.ylabel("count of cars")
+plt.legend(loc = "upper right")
+
+## pie chart
+
+plt.subplot(2,2,3)
+counts = df["transmission"].value_counts()
+plt.pie(counts.values,labels= counts.index,colors=["orange","yellow"],autopct="%1.1f%%",explode=(0,0.1))
+plt.title("category comparission")
+
+## histogram
+
+plt.subplot(2,2,4)
+plt.hist(df["year"],bins=10,color="green",edgecolor = "black",width=10,label="years")
+plt.xlim(left = 2000,right = 2010)
+plt.xlabel("years")
+plt.ylabel("count of cars per year")
+plt.legend(loc = "upper right")
+plt.title("cars year wise evaluation")
+plt.tight_layout()
+plt.suptitle("deep analysis on cars dataset")
+plt.show()
+
+## detecting outliers
+
+sns.boxplot(data = df ,x = "transmission",y = "km_driven",hue = "owner")
+plt.show()
+
+## heatmap
+
+columns = ["year","selling_price","km_driven"]
+sns.heatmap(data = df[columns].corr(),annot=True)
+plt.show()
+
+## scatter plot to get the co-relationship of the data
+
+sns.set_style("ticks")  # by using the set_style command it just like the grid command in matplotlib
+sns.despine(left = True)
+sns.scatterplot(data=df,x= "year",y="selling_price",hue= "transmission",palette="Set1")
+plt.show()
