@@ -1,0 +1,105 @@
+import pandas as pd
+import numpy as np
+
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+
+
+# -----------------------------
+# 1. Load dataset
+# -----------------------------
+data_path = "data/diabetes.csv"
+df = pd.read_csv(data_path)
+
+print("First 5 rows of data:")
+print(df.head())
+print("\nDataset info:")
+print(df.info())
+
+
+# -----------------------------
+# 2. Basic data cleaning
+# -----------------------------
+# In medical datasets, 0 often means missing value for some columns
+columns_with_zero_issue = [
+    "Glucose",
+    "BloodPressure",
+    "SkinThickness",
+    "Insulin",
+    "BMI"
+]
+
+for col in columns_with_zero_issue:
+    df[col] = df[col].replace(0, np.nan)
+    df[col].fillna(df[col].median(), inplace=True)
+
+print("\nMissing values after cleaning:")
+print(df.isnull().sum())
+
+
+# -----------------------------
+# 3. Split features and target
+# -----------------------------
+X = df.drop("Outcome", axis=1)
+y = df["Outcome"]
+
+
+# -----------------------------
+# 4. Train-test split
+# -----------------------------
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.2,
+    random_state=42,
+    stratify=y
+)
+
+
+# -----------------------------
+# 5. Feature scaling
+# -----------------------------
+scaler = StandardScaler()
+
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+
+# -----------------------------
+# 6. Model training
+# -----------------------------
+model = LogisticRegression(max_iter=1000)
+model.fit(X_train_scaled, y_train)
+
+
+# -----------------------------
+# 7. Model evaluation
+# -----------------------------
+y_pred = model.predict(X_test_scaled)
+
+accuracy = accuracy_score(y_test, y_pred)
+print("\nModel Accuracy:", round(accuracy * 100, 2), "%")
+
+print("\nConfusion Matrix:")
+print(confusion_matrix(y_test, y_pred))
+
+print("\nClassification Report:")
+print(classification_report(y_test, y_pred))
+
+
+# -----------------------------
+# 8. Prediction on new patient
+# -----------------------------
+# Example patient data
+# Order must match training columns
+new_patient = np.array([[2, 120, 70, 25, 100, 28.0, 0.5, 35]])
+
+new_patient_scaled = scaler.transform(new_patient)
+prediction = model.predict(new_patient_scaled)
+
+if prediction[0] == 1:
+    print("\nPrediction: Patient is likely to have the disease.")
+else:
+    print("\nPrediction: Patient is unlikely to have the disease.")
